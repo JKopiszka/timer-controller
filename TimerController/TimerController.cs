@@ -10,7 +10,7 @@ namespace TimerController
     /// </summary>
     public class TimerController
     {
-        private readonly Timer? _timer;
+        private readonly Timer? _timer; // Timer instance for managing time intervals
 
         /// <summary>
         /// Gets the current time value, in seconds.
@@ -39,19 +39,18 @@ namespace TimerController
         /// milliseconds.
         /// </param>
         /// 
-        /// <param name="callback">The method to be called when the timer elapses.</param>
         /// <exception cref="NegativeTimeException">
         /// Thrown when the specified time is less than or equal to zero.
         /// </exception>
 
-        public TimerController(ElapsedEventHandler callback, int time = 1000)
+        public TimerController(int time = 1000)
         {
             // Validate the time parameter
             if (time <= 0)
                 throw new NegativeTimeException("Timer interval must be greater than zero.");
 
             _timer = new Timer(time); // Tick every 'time' milliseconds
-            _timer.Elapsed += callback; // Subscribe to the Elapsed event
+            _timer.Elapsed += OnTimerElapsed; // Subscribe to the Elapsed event
         }
 
         /// <summary>
@@ -86,8 +85,26 @@ namespace TimerController
         /// Stops the timer if it is currently running.
         /// </summary>
         public void StopTimer() { if (_timer == null) throw new TimerNotInitialized(); _timer.Stop(); }
-    }
 
-    
-
+        /// <summary>
+        /// Pauses the timer, preventing it from triggering further events.
+        /// </summary>
+        /// <remarks>This method disables the timer if it has been initialized. If the timer is already
+        /// paused, calling this method has no effect.</remarks>
+        /// <exception cref="TimerNotInitialized">Thrown if the timer has not been initialized before calling this method.</exception>
+        public void PauseTimer() { if (_timer == null) throw new TimerNotInitialized(); _timer.Enabled = false; }
+        
+        private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+        {
+            // Increment the current time
+            CurrentTimeSeconds++;
+            // Notify subscribers about the timer update
+            TimerUpdated?.Invoke(new string[] { CurrentTimeSeconds.ToString(), TargetTimeSeconds.ToString() });
+            // Check if the target time has been reached
+            if (CurrentTimeSeconds >= TargetTimeSeconds)
+            {
+                StopTimer();
+            }
+        }
+    }    
 }
