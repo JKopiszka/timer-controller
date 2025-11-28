@@ -93,7 +93,17 @@ namespace TimerController
         /// paused, calling this method has no effect.</remarks>
         /// <exception cref="TimerNotInitialized">Thrown if the timer has not been initialized before calling this method.</exception>
         public void PauseTimer() { if (_timer == null) throw new TimerNotInitialized(); _timer.Enabled = false; }
-        
+
+        public void ResumeTimer() { if (_timer == null) throw new TimerNotInitialized(); _timer.Enabled = true; }
+
+        public void ResetTimer()
+        {
+            if (_timer == null) throw new TimerNotInitialized();
+            _timer.Stop();
+            CurrentTimeSeconds = 0;
+            TargetTimeSeconds = 0;
+        }
+
         private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
             // Increment the current time
