@@ -2,7 +2,7 @@
 Timer controller is a dynamic-linked library, handling timer countdown operations.
 
 ![Build](https://img.shields.io/badge/build-stable-brightgreen)
-![License](https://img.shields.io/badge/license-GNU LPGL-blue)
+![License](https://img.shields.io/badge/license-GNU_LGPL-blue)
 
 # About
 TimerController is library for C# dedicated for developers with need of reliable countdown tools. TimerController is modular, easy to use and limit developer engagement to minimum.
